@@ -11,9 +11,9 @@ class User(db.Model):
     created_on: Mapped[DateTime] = mapped_column(DateTime(timezone=True), default=datetime.now)
 
     username: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
-    password: Mapped[str] = mapped_column(String(80), nullable=False)
+    password: Mapped[str] = mapped_column(String(200), nullable=False)
     email: Mapped[str] = mapped_column(String(80), nullable=False, unique=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
 
     nickname: Mapped[str] = mapped_column(String(20), nullable=False, unique=True)
-
