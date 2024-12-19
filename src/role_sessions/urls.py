@@ -1,5 +1,5 @@
 from flask import request, Blueprint
-
+from flask_jwt_extended import jwt_required
 
 from . import controllers
 
@@ -7,6 +7,7 @@ role_sessions = Blueprint("role_sessions", __name__, url_prefix="/role_sessions"
 
 
 @role_sessions.route("/", methods=["GET", "POST"])
+@jwt_required()
 def list_create_role_session():
     if request.method == "GET":
         return controllers.list_all_role_sessions_controller()
@@ -16,6 +17,7 @@ def list_create_role_session():
 
 
 @role_sessions.route("/<role_session_id>", methods=["GET"])
+@jwt_required()
 def retrieve_role_sessions(role_session_id):
     if request.method == "GET":
         return controllers.retrieve_single_role_session(role_session_id)

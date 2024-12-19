@@ -2,8 +2,9 @@ from uuid import uuid4
 
 from flask import request, jsonify
 from marshmallow import ValidationError
+from flask_jwt_extended import create_access_token
 
-from src.auth.schemas import create_user_schema, list_user_schema
+from src.auth.schemas import create_user_schema, list_user_schema, login_schema
 from src.auth.models import User
 
 from src import bcrypt, db
@@ -21,7 +22,7 @@ def register_controller():
     new_user = User(
         id=new_id,
         username=result["username"],
-        password=bcrypt.generate_password_hash(result["password"]),
+        password=bcrypt.generate_password_hash(result["password"]).decode('utf-8'),
         email=result["email"],
         nickname=result["nickname"],
     )
@@ -30,3 +31,22 @@ def register_controller():
 
     response = list_user_schema.dump(User.query.get(new_id))
     return jsonify(response)
+
+
+def login_controller():
+    req_data = request.get_json()
+
+    try:
+        result = login_schema.load(req_data)
+        print(result)
+    except ValidationError as err:
+        print("ERR")
+        return err.messages, 400
+
+    user = User.query.filter_by(username=result["username"]).first()
+
+    if user and bcrypt.check_password_hash(user.password, result["password"]):
+        access_token = create_access_token(identity=user.id)
+        return jsonify({"id": user.id, "access_token": access_token})
+    else:
+        return jsonify({"message": "Login failed"}), 401
