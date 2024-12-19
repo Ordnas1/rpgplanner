@@ -2,6 +2,7 @@
 import os
 
 from . import create_app
+from .api_bp import public_api
 
 app = create_app(os.getenv("CONFIG_MODE"))
 
@@ -11,7 +12,9 @@ def hello():
     """just testing"""
     return "Hello world!"
 
-from .role_sessions import urls  # pylint: disable=W0611, C0413  # noqa: F401 E402,E305
+
+app.register_blueprint(public_api)
+
 
 if __name__ == "__main__":
     app.run()

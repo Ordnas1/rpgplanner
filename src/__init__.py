@@ -2,12 +2,19 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from sqlalchemy.orm import DeclarativeBase
+from flask_jwt_extended import JWTManager
 
 from .config import config
 
 
-db = SQLAlchemy()
+class Base(DeclarativeBase):
+    pass
+
+
+db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
+jwt = JWTManager()
 
 
 def create_app(config_mode):
@@ -17,5 +24,6 @@ def create_app(config_mode):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    jwt.init_app(app)
 
     return app

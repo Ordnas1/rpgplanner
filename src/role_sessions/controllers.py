@@ -23,7 +23,7 @@ def create_role_session_controller():
         start_time=request_form['start_time'],
         end_time=request_form['end_time'],
     )
-    print(request_form, new_session)
+
     db.session.add(new_session)
     db.session.commit()
 
