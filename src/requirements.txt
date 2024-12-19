@@ -1,6 +1,7 @@
 alembic==1.14.0
 astroid==3.3.6
 bandit==1.8.0
+black==24.10.0
 blinker==1.9.0
 click==8.1.7
 dill==0.3.9
@@ -25,6 +26,8 @@ mccabe==0.7.0
 mdurl==0.1.2
 mypy==1.13.0
 mypy-extensions==1.0.0
+packaging==24.2
+pathspec==0.12.1
 pbr==6.1.0
 platformdirs==4.3.6
 psycopg2-binary==2.9.10
