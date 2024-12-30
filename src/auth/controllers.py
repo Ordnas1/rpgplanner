@@ -7,7 +7,18 @@ from flask_jwt_extended import create_access_token
 from src.auth.schemas import create_user_schema, list_user_schema, login_schema
 from src.auth.models import User
 
-from src import bcrypt, db
+from src import bcrypt, db, jwt
+
+
+@jwt.user_identity_loader
+def user_identity_lookup(user):
+    return user.id
+
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return User.query.filter_by(id=identity).one_or_none()
 
 
 def register_controller():
@@ -46,7 +57,7 @@ def login_controller():
     user = User.query.filter_by(username=result["username"]).first()
 
     if user and bcrypt.check_password_hash(user.password, result["password"]):
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=user)
         return jsonify({"id": user.id, "access_token": access_token})
     else:
         return jsonify({"message": "Login failed"}), 401
